@@ -16,7 +16,8 @@ def compute_per_token_logprobs(
         # TODO(student): run the causal LM, align logits with the next-token targets,
         # and return per-token log-probabilities of the observed tokens.
         # Hint: use F.cross_entropy with reduction='none' for memory efficiency.
-        raise NotImplementedError("Implement compute_per_token_logprobs in the student starter.")
+        lgts = model(input_ids=input_ids, attention_mask=attention_mask, use_cache=False).logits  
+        return -F.cross_entropy(lgts[:, :-1].reshape(-1, lgts.size(-1)), input_ids[:, 1:].reshape(-1), reduction="none").reshape(input_ids.shape[0], -1)  
 
 
 def build_completion_mask(
